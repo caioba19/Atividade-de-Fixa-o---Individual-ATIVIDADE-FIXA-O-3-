@@ -47,7 +47,7 @@ Abaixo estão os 20 desafios propostos e resolvidos neste projeto:
 
 1. Faça o clone deste repositório em sua máquina local:
    ```bash
-   git clone [https://github.com/caioba19/Atividade-de-Fixa-o---Individual-ATIVIDADE-FIXA-O-3-.git](https://github.com/caioba19/Atividade-de-Fixa-o---Individual-ATIVIDADE-FIXA-O-3-.git)
+   git clone https://github.com/caioba19/Atividade-de-Fixa-o---Individual-ATIVIDADE-FIXA-O-3-.git
    ```
 2. Navegue até a pasta do projeto.
 3. Abra os arquivos `.html` referentes a cada questão (ex: `questao01.html`) diretamente no seu navegador de preferência.
