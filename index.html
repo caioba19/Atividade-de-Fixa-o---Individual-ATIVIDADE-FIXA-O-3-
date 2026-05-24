@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atividade de Fixação 3 — Desenvolvimento FrontEnd</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+    header { max-width: 900px; margin: 0 auto 2.5rem; }
+    h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: .3rem; }
+    .header-sub { color: #64748b; font-size: .9rem; }
+    .badge { display: inline-flex; align-items: center; gap: .4rem; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: .25rem .7rem; font-size: .78rem; color: #94a3b8; margin-top: .8rem; }
+    .grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .9rem; max-width: 900px; margin: 0 auto; }
+    a.card { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.1rem; text-decoration: none; color: inherit; transition: border .2s, transform .15s, background .2s; display: block; }
+    a.card:hover { border-color: #6366f1; background: #1a1f36; transform: translateY(-2px); }
+    .card-num  { font-size: .72rem; color: #64748b; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .5rem; }
+    .card-emoji{ font-size: 1.6rem; margin-bottom: .4rem; }
+    .card-titulo { font-size: .88rem; font-weight: 600; line-height: 1.35; }
+    .card-tag  { display: inline-block; margin-top: .6rem; font-size: .7rem; background: #1e3a5f; color: #93c5fd; padding: .15rem .5rem; border-radius: 4px; }
+    footer { max-width: 900px; margin: 2.5rem auto 0; font-size: .78rem; color: #334155; text-align: center; padding-top: 1rem; border-top: 1px solid #1e293b; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📋 Atividade de Fixação 3</h1>
+    <div class="header-sub">Desenvolvimento FrontEnd — Prof. Celso Barreto</div>
+    <div class="badge">📌 Lista de Exercícios — addEventListener() · 20 questões</div>
+  </header>
+
+  <div class="grade">
+    <a class="card" href="questao01.html"><div class="card-num">Questão 01</div><div class="card-emoji">🎓</div><div class="card-titulo">Sistema de Login Acadêmico</div><span class="card-tag">submit</span></a>
+    <a class="card" href="questao02.html"><div class="card-num">Questão 02</div><div class="card-emoji">🖥️</div><div class="card-titulo">Controle de Temperatura de Servidor</div><span class="card-tag">keyup</span></a>
+    <a class="card" href="questao03.html"><div class="card-num">Questão 03</div><div class="card-emoji">💬</div><div class="card-titulo">Sistema de Comentários de Rede Social</div><span class="card-tag">input</span></a>
+    <a class="card" href="questao04.html"><div class="card-num">Questão 04</div><div class="card-emoji">🛒</div><div class="card-titulo">Loja Virtual de Eletrônicos</div><span class="card-tag">change</span></a>
+    <a class="card" href="questao05.html"><div class="card-num">Questão 05</div><div class="card-emoji">🔐</div><div class="card-titulo">Sistema de Cadastro — Força da Senha</div><span class="card-tag">keyup</span></a>
+    <a class="card" href="questao06.html"><div class="card-num">Questão 06</div><div class="card-emoji">💡</div><div class="card-titulo">Controle de Luminosidade Inteligente</div><span class="card-tag">input (range)</span></a>
+    <a class="card" href="questao07.html"><div class="card-num">Questão 07</div><div class="card-emoji">🎬</div><div class="card-titulo">Sistema de Pesquisa de Filmes</div><span class="card-tag">input</span></a>
+    <a class="card" href="questao08.html"><div class="card-num">Questão 08</div><div class="card-emoji">🏦</div><div class="card-titulo">Sistema Bancário — Transferência</div><span class="card-tag">click</span></a>
+    <a class="card" href="questao09.html"><div class="card-num">Questão 09</div><div class="card-emoji">🌙</div><div class="card-titulo">Sistema de Tema Escuro</div><span class="card-tag">click</span></a>
+    <a class="card" href="questao10.html"><div class="card-num">Questão 10</div><div class="card-emoji">📦</div><div class="card-titulo">Controle de Estoque</div><span class="card-tag">input</span></a>
+    <a class="card" href="questao11.html"><div class="card-num">Questão 11</div><div class="card-emoji">📚</div><div class="card-titulo">Plataforma de Cursos Online</div><span class="card-tag">click</span></a>
+    <a class="card" href="questao12.html"><div class="card-num">Questão 12</div><div class="card-emoji">⭐</div><div class="card-titulo">Sistema de Avaliação por Estrelas</div><span class="card-tag">click / mouseover</span></a>
+    <a class="card" href="questao13.html"><div class="card-num">Questão 13</div><div class="card-emoji">⚕️</div><div class="card-titulo">Calculadora de IMC</div><span class="card-tag">blur</span></a>
+    <a class="card" href="questao14.html"><div class="card-num">Questão 14</div><div class="card-emoji">📎</div><div class="card-titulo">Sistema de Upload de Arquivos</div><span class="card-tag">change</span></a>
+    <a class="card" href="questao15.html"><div class="card-num">Questão 15</div><div class="card-emoji">🗳️</div><div class="card-titulo">Sistema de Votação</div><span class="card-tag">click</span></a>
+    <a class="card" href="questao16.html"><div class="card-num">Questão 16</div><div class="card-emoji">🔔</div><div class="card-titulo">Sistema de Notificações</div><span class="card-tag">mouseover / mouseout</span></a>
+    <a class="card" href="questao17.html"><div class="card-num">Questão 17</div><div class="card-emoji">🚦</div><div class="card-titulo">Simulador de Semáforo Inteligente</div><span class="card-tag">click + setInterval</span></a>
+    <a class="card" href="questao18.html"><div class="card-num">Questão 18</div><div class="card-emoji">📅</div><div class="card-titulo">Sistema de Agenda</div><span class="card-tag">click / change</span></a>
+    <a class="card" href="questao19.html"><div class="card-num">Questão 19</div><div class="card-emoji">💱</div><div class="card-titulo">Sistema de Conversão Monetária</div><span class="card-tag">input</span></a>
+    <a class="card" href="questao20.html"><div class="card-num">Questão 20</div><div class="card-emoji">🎵</div><div class="card-titulo">Painel de Controle de Música</div><span class="card-tag">click + input</span></a>
+  </div>
+
+  <footer>Centro Universitário Jorge Amado · ADS · Desenvolvimento FrontEnd</footer>
+</body>
+</html>

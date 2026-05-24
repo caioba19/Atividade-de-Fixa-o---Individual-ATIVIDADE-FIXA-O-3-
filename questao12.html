@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q12 — Sistema de Avaliação</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #1e293b; padding: 2.5rem 2rem; border-radius: 12px; width: 380px; border: 1px solid #334155; text-align: center; }
+    h1 { font-size: 1.4rem; margin-bottom: .5rem; color: #fbbf24; }
+    .subtitulo { font-size: .85rem; color: #64748b; margin-bottom: 2rem; }
+    .estrelas { display: flex; justify-content: center; gap: .5rem; margin-bottom: 1.5rem; }
+    .estrela { font-size: 2.8rem; cursor: pointer; transition: transform .15s, filter .15s; filter: grayscale(1) opacity(0.4); user-select: none; }
+    .estrela.hover, .estrela.selecionada { filter: none; }
+    .estrela:hover { transform: scale(1.2); }
+    .nota-label { font-size: 1.1rem; font-weight: 600; min-height: 1.5rem; color: #fbbf24; }
+    .nota-desc  { font-size: .85rem; color: #94a3b8; margin-top: .3rem; min-height: 1.2rem; }
+    .btn-avaliar { margin-top: 1.5rem; width: 100%; padding: .75rem; background: #fbbf24; color: #0f172a; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; }
+    .btn-avaliar:hover { background: #fde68a; }
+    .confirmacao { margin-top: 1rem; padding: .7rem; background: #052e16; color: #86efac; border-radius: 8px; display: none; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🍽️ Avalie o Atendimento</h1>
+    <p class="subtitulo">Como foi sua experiência conosco hoje?</p>
+
+    <div class="estrelas" id="estrelas">
+      <span class="estrela" data-valor="1">⭐</span>
+      <span class="estrela" data-valor="2">⭐</span>
+      <span class="estrela" data-valor="3">⭐</span>
+      <span class="estrela" data-valor="4">⭐</span>
+      <span class="estrela" data-valor="5">⭐</span>
+    </div>
+
+    <div class="nota-label" id="notaLabel">Clique para avaliar</div>
+    <div class="nota-desc"  id="notaDesc"></div>
+
+    <button class="btn-avaliar" id="btnAvaliar">Enviar Avaliação</button>
+    <div class="confirmacao" id="confirmacao"></div>
+  </div>
+
+  <script>
+    const estrelas   = document.querySelectorAll('.estrela');
+    const notaLabel  = document.getElementById('notaLabel');
+    const notaDesc   = document.getElementById('notaDesc');
+    const confirmacao= document.getElementById('confirmacao');
+    let notaSelecionada = 0;
+
+    const descricoes = ['', 'Muito ruim 😞', 'Ruim 😕', 'Regular 😐', 'Bom 😊', 'Excelente! 🤩'];
+
+    function destacar(ate) {
+      estrelas.forEach(function(e, i) {
+        e.classList.toggle('hover', i < ate);
+        e.classList.toggle('selecionada', i < notaSelecionada && ate === 0);
+      });
+    }
+
+    estrelas.forEach(function(estrela) {
+      estrela.addEventListener('mouseover', function() {
+        destacar(parseInt(this.dataset.valor));
+        notaLabel.textContent = `${this.dataset.valor} estrela${this.dataset.valor > 1 ? 's' : ''}`;
+        notaDesc.textContent  = descricoes[this.dataset.valor];
+      });
+
+      estrela.addEventListener('mouseout', function() {
+        destacar(0);
+        notaLabel.textContent = notaSelecionada > 0 ? `${notaSelecionada} estrela${notaSelecionada > 1 ? 's' : ''}` : 'Clique para avaliar';
+        notaDesc.textContent  = descricoes[notaSelecionada];
+      });
+
+      estrela.addEventListener('click', function() {
+        notaSelecionada = parseInt(this.dataset.valor);
+        estrelas.forEach(function(e, i) {
+          e.classList.toggle('selecionada', i < notaSelecionada);
+          e.classList.remove('hover');
+        });
+        notaLabel.textContent = `${notaSelecionada} estrela${notaSelecionada > 1 ? 's' : ''}`;
+        notaDesc.textContent  = descricoes[notaSelecionada];
+      });
+    });
+
+    document.getElementById('btnAvaliar').addEventListener('click', function() {
+      if (notaSelecionada === 0) { alert('Selecione uma nota antes de enviar!'); return; }
+      confirmacao.textContent = `✅ Avaliação de ${notaSelecionada}⭐ enviada! Obrigado pelo seu feedback!`;
+      confirmacao.style.display = 'block';
+      setTimeout(function() { confirmacao.style.display = 'none'; }, 3000);
+    });
+  </script>
+</body>
+</html>

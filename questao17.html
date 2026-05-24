@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q17 — Semáforo Inteligente</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #1e293b; padding: 2.5rem 2rem; border-radius: 12px; width: 320px; border: 1px solid #334155; text-align: center; }
+    h1 { font-size: 1.4rem; margin-bottom: .3rem; color: #94a3b8; }
+    .sub { font-size: .8rem; color: #64748b; margin-bottom: 2rem; }
+    .caixa { background: #0a0a0a; border-radius: 16px; padding: 1.5rem; display: inline-flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; border: 3px solid #1e293b; }
+    .luz { width: 80px; height: 80px; border-radius: 50%; background: #111; transition: background .3s, box-shadow .3s; }
+    .luz.vermelho-on { background: #ef4444; box-shadow: 0 0 30px 10px rgba(239,68,68,.6); }
+    .luz.amarelo-on  { background: #eab308; box-shadow: 0 0 30px 10px rgba(234,179, 8,.6); }
+    .luz.verde-on    { background: #22c55e; box-shadow: 0 0 30px 10px rgba(34,197,94,.6); }
+    .status { font-size: 1.1rem; font-weight: 700; min-height: 1.5rem; margin-bottom: .5rem; }
+    .instrucao { font-size: .85rem; color: #64748b; margin-bottom: 1.5rem; min-height: 1.2rem; }
+    .contador-tempo { font-size: 2rem; font-weight: 700; color: #94a3b8; margin-bottom: 1.5rem; }
+    .controles { display: flex; gap: .6rem; justify-content: center; }
+    button { padding: .6rem 1.4rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: .9rem; transition: opacity .2s; }
+    #btnIniciar { background: #22c55e; color: #052e16; }
+    #btnParar   { background: #ef4444; color: #fff; display: none; }
+    button:hover { opacity: .85; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🚦 Semáforo Inteligente</h1>
+    <p class="sub">Simulação educativa de semáforo digital</p>
+    <div class="caixa">
+      <div class="luz" id="luz-vermelho"></div>
+      <div class="luz" id="luz-amarelo"></div>
+      <div class="luz" id="luz-verde"></div>
+    </div>
+    <div class="status" id="status">Aguardando...</div>
+    <div class="instrucao" id="instrucao">Clique em Iniciar para começar</div>
+    <div class="contador-tempo" id="contador">—</div>
+    <div class="controles">
+      <button id="btnIniciar">▶ Iniciar</button>
+      <button id="btnParar">⏹ Parar</button>
+    </div>
+  </div>
+
+  <script>
+    const luzes    = { vermelho: document.getElementById('luz-vermelho'), amarelo: document.getElementById('luz-amarelo'), verde: document.getElementById('luz-verde') };
+    const status   = document.getElementById('status');
+    const instrucao= document.getElementById('instrucao');
+    const contador = document.getElementById('contador');
+
+    const ciclo = [
+      { cor: 'vermelho', tempo: 5, label: '🔴 PARE',       msg: 'Aguarde a liberação do sinal' },
+      { cor: 'verde',    tempo: 5, label: '🟢 SIGA',        msg: 'Via liberada, pode avançar' },
+      { cor: 'amarelo',  tempo: 2, label: '🟡 ATENÇÃO',     msg: 'Prepare-se para parar' },
+    ];
+
+    let etapa = 0, tempoRestante = 0, intervalo = null, contadorEtapa = null;
+
+    function apagarTodas() {
+      Object.values(luzes).forEach(l => l.className = 'luz');
+    }
+
+    function acenderEtapa(i) {
+      apagarTodas();
+      const e = ciclo[i];
+      luzes[e.cor].classList.add(e.cor + '-on');
+      status.textContent    = e.label;
+      instrucao.textContent = e.msg;
+      tempoRestante         = e.tempo;
+      contador.textContent  = tempoRestante + 's';
+    }
+
+    function proximaEtapa() {
+      etapa = (etapa + 1) % ciclo.length;
+      acenderEtapa(etapa);
+    }
+
+    document.getElementById('btnIniciar').addEventListener('click', function() {
+      if (intervalo) return;
+      etapa = 0;
+      acenderEtapa(etapa);
+      this.style.display = 'none';
+      document.getElementById('btnParar').style.display = 'inline-block';
+
+      intervalo = setInterval(function() {
+        tempoRestante--;
+        contador.textContent = tempoRestante + 's';
+        if (tempoRestante <= 0) proximaEtapa();
+      }, 1000);
+    });
+
+    document.getElementById('btnParar').addEventListener('click', function() {
+      clearInterval(intervalo);
+      intervalo = null;
+      apagarTodas();
+      status.textContent    = 'Parado';
+      instrucao.textContent = 'Clique em Iniciar para começar';
+      contador.textContent  = '—';
+      this.style.display    = 'none';
+      document.getElementById('btnIniciar').style.display = 'inline-block';
+    });
+  </script>
+</body>
+</html>

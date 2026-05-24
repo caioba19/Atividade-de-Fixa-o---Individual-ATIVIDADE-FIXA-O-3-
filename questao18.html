@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q18 — Sistema de Agenda</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+    .card { background: #1e293b; padding: 2rem; border-radius: 12px; width: 460px; border: 1px solid #334155; }
+    h1 { font-size: 1.4rem; margin-bottom: .3rem; color: #f472b6; }
+    .sub { font-size: .8rem; color: #64748b; margin-bottom: 1.5rem; }
+    .selecao { display: flex; gap: .8rem; margin-bottom: 1.2rem; }
+    select { flex: 1; padding: .6rem .8rem; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; outline: none; }
+    select:focus { border-color: #f472b6; }
+    .grade { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin-bottom: 1.2rem; }
+    .horario { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: .55rem; text-align: center; cursor: pointer; font-size: .85rem; transition: all .15s; }
+    .horario:hover:not(.ocupado):not(.selecionado) { border-color: #f472b6; color: #f472b6; }
+    .horario.selecionado { background: #831843; border-color: #f472b6; color: #fce7f3; font-weight: 700; }
+    .horario.ocupado { background: #1e293b; color: #334155; cursor: not-allowed; text-decoration: line-through; }
+    .confirmacao { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 1rem; display: none; }
+    .confirmacao h3 { font-size: .9rem; margin-bottom: .5rem; color: #f472b6; }
+    .conf-info { font-size: .85rem; color: #94a3b8; }
+    .btn-agendar { width: 100%; padding: .75rem; background: #f472b6; color: #0f172a; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; display: none; }
+    .btn-agendar:hover { background: #f9a8d4; }
+    .legenda { display: flex; gap: 1rem; font-size: .75rem; color: #64748b; }
+    .leg-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: .3rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📅 Agendamento de Consulta</h1>
+    <p class="sub">Selecione o médico, a data e o horário disponível.</p>
+
+    <div class="selecao">
+      <select id="medico">
+        <option value="">👨‍⚕️ Selecione o médico</option>
+        <option value="Dra. Ana Lima">Dra. Ana Lima — Clínica Geral</option>
+        <option value="Dr. Carlos Melo">Dr. Carlos Melo — Cardiologia</option>
+        <option value="Dra. Julia Nunes">Dra. Julia Nunes — Dermatologia</option>
+      </select>
+      <select id="data">
+        <option value="">📆 Selecione o dia</option>
+        <option value="Segunda, 26/05">Segunda, 26/05</option>
+        <option value="Terça, 27/05">Terça, 27/05</option>
+        <option value="Quarta, 28/05">Quarta, 28/05</option>
+      </select>
+    </div>
+
+    <div class="grade" id="gradeHorarios"></div>
+
+    <div class="legenda">
+      <span><span class="leg-dot" style="background:#334155"></span>Disponível</span>
+      <span><span class="leg-dot" style="background:#f472b6"></span>Selecionado</span>
+      <span><span class="leg-dot" style="background:#1e293b;border:1px solid #334155"></span>Ocupado</span>
+    </div>
+
+    <div class="confirmacao" id="confirmacao">
+      <h3>🗓️ Resumo do agendamento</h3>
+      <div class="conf-info" id="confInfo"></div>
+    </div>
+
+    <button class="btn-agendar" id="btnAgendar">Confirmar Agendamento</button>
+  </div>
+
+  <script>
+    const horarios = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+    const ocupados = [1, 3, 5, 8, 12]; // índices ocupados
+    let selecionado = null;
+
+    function renderGrade() {
+      const grade = document.getElementById('gradeHorarios');
+      grade.innerHTML = '';
+      horarios.forEach(function(h, i) {
+        const div = document.createElement('div');
+        div.className = 'horario' + (ocupados.includes(i) ? ' ocupado' : '') + (selecionado === i ? ' selecionado' : '');
+        div.textContent = h;
+
+        if (!ocupados.includes(i)) {
+          div.addEventListener('click', function() {
+            selecionado = i;
+            renderGrade();
+            atualizarConfirmacao();
+          });
+        }
+        grade.appendChild(div);
+      });
+    }
+
+    function atualizarConfirmacao() {
+      const medico = document.getElementById('medico').value;
+      const data   = document.getElementById('data').value;
+      const conf   = document.getElementById('confirmacao');
+      const btn    = document.getElementById('btnAgendar');
+
+      if (medico && data && selecionado !== null) {
+        document.getElementById('confInfo').innerHTML =
+          `<b>Médico:</b> ${medico}<br><b>Data:</b> ${data}<br><b>Horário:</b> ${horarios[selecionado]}`;
+        conf.style.display = 'block';
+        btn.style.display  = 'block';
+      } else {
+        conf.style.display = 'none';
+        btn.style.display  = 'none';
+      }
+    }
+
+    document.getElementById('medico').addEventListener('change', atualizarConfirmacao);
+    document.getElementById('data').addEventListener('change', atualizarConfirmacao);
+
+    document.getElementById('btnAgendar').addEventListener('click', function() {
+      const medico = document.getElementById('medico').value;
+      const data   = document.getElementById('data').value;
+      alert(`✅ Consulta agendada!\n${medico}\n${data} às ${horarios[selecionado]}`);
+    });
+
+    renderGrade();
+  </script>
+</body>
+</html>

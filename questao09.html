@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q09 — Tema Escuro</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; transition: background .3s, color .3s, border-color .3s; }
+    :root {
+      --bg:     #ffffff;
+      --surface: #f8fafc;
+      --border:  #e2e8f0;
+      --text:    #0f172a;
+      --text2:   #64748b;
+      --btn-bg:  #0f172a;
+      --btn-text:#ffffff;
+    }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    header h2 { font-size: 1.1rem; font-weight: 700; }
+    main { max-width: 700px; margin: 3rem auto; padding: 0 1.5rem; }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
+    p  { color: var(--text2); line-height: 1.7; margin-bottom: 1.5rem; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; }
+    .card h3 { margin-bottom: .5rem; }
+    .card p  { margin: 0; font-size: .9rem; }
+    button#btnTema { background: var(--btn-bg); color: var(--btn-text); border: none; padding: .55rem 1.2rem; border-radius: 8px; cursor: pointer; font-size: .9rem; font-weight: 600; display: flex; align-items: center; gap: .4rem; }
+    button#btnTema:hover { opacity: .85; }
+
+    /* Modo escuro */
+    body.escuro {
+      --bg:      #0f172a;
+      --surface: #1e293b;
+      --border:  #334155;
+      --text:    #f1f5f9;
+      --text2:   #94a3b8;
+      --btn-bg:  #f1f5f9;
+      --btn-text:#0f172a;
+    }
+  </style>
+</head>
+<body id="pagina">
+  <header>
+    <h2>🏢 Site Institucional</h2>
+    <button id="btnTema">🌙 Modo Escuro</button>
+  </header>
+
+  <main>
+    <h1>Bem-vindo ao nosso site</h1>
+    <p>Esta é uma demonstração de alternância entre modo claro e escuro. Clique no botão no canto superior direito para alternar o tema da página.</p>
+
+    <div class="card">
+      <h3>📌 Sobre nós</h3>
+      <p>Somos uma empresa dedicada a criar soluções inovadoras para nossos clientes com qualidade e eficiência.</p>
+    </div>
+    <div class="card">
+      <h3>🚀 Nossa missão</h3>
+      <p>Transformar ideias em produtos digitais de alto impacto, com foco na experiência do usuário.</p>
+    </div>
+    <div class="card">
+      <h3>📞 Contato</h3>
+      <p>Entre em contato conosco pelo e-mail contato@empresa.com ou pelo telefone (71) 9 9999-9999.</p>
+    </div>
+  </main>
+
+  <script>
+    const btn    = document.getElementById('btnTema');
+    const pagina = document.getElementById('pagina');
+
+    btn.addEventListener('click', function() {
+      const modoEscuro = pagina.classList.toggle('escuro');
+      btn.textContent  = modoEscuro ? '☀️ Modo Claro' : '🌙 Modo Escuro';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q20 — Player de Música</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .player { background: #1e293b; padding: 2rem; border-radius: 16px; width: 360px; border: 1px solid #334155; }
+    .capa { width: 100%; height: 180px; background: linear-gradient(135deg, #312e81, #1e1b4b); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 4rem; margin-bottom: 1.2rem; position: relative; overflow: hidden; }
+    .capa::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(167,139,250,.3), transparent); }
+    .capa-icone { position: relative; z-index: 1; animation: spin 10s linear infinite paused; }
+    .capa-icone.tocando { animation-play-state: running; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .musica-info { text-align: center; margin-bottom: 1.2rem; }
+    .musica-nome { font-size: 1rem; font-weight: 700; }
+    .musica-artista { font-size: .85rem; color: #94a3b8; margin-top: .2rem; }
+    .progresso-wrap { margin-bottom .8rem; }
+    .tempos { display: flex; justify-content: space-between; font-size: .75rem; color: #64748b; margin-bottom: .3rem; }
+    .barra-fundo { height: 4px; background: #334155; border-radius: 2px; cursor: pointer; }
+    .barra-prog { height: 4px; background: #a78bfa; border-radius: 2px; width: 0%; transition: width .5s linear; }
+    .controles { display: flex; align-items: center; justify-content: center; gap: 1.2rem; margin: 1.2rem 0; }
+    .btn-ctrl { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.4rem; transition: color .15s, transform .15s; }
+    .btn-ctrl:hover { color: #e2e8f0; transform: scale(1.1); }
+    .btn-play { background: #a78bfa; color: #0f172a; width: 52px; height: 52px; border-radius: 50%; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: background .2s, transform .15s; }
+    .btn-play:hover { background: #c4b5fd; transform: scale(1.05); }
+    .volume-area { display: flex; align-items: center; gap: .8rem; padding-top: .8rem; border-top: 1px solid #334155; }
+    .vol-icone { font-size: 1rem; color: #64748b; width: 20px; text-align: center; }
+    input[type="range"] { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: #334155; outline: none; cursor: pointer; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #a78bfa; cursor: pointer; }
+    .vol-percent { font-size: .8rem; color: #64748b; width: 35px; text-align: right; }
+    .status { text-align: center; font-size: .78rem; color: #64748b; margin-top: .8rem; min-height: 1rem; }
+    .playlist { margin-top: 1rem; border-top: 1px solid #334155; padding-top: .8rem; }
+    .pl-title { font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: #64748b; margin-bottom: .6rem; }
+    .pl-item { display: flex; align-items: center; gap: .7rem; padding: .45rem .5rem; border-radius: 6px; cursor: pointer; transition: background .15s; }
+    .pl-item:hover { background: rgba(167,139,250,.1); }
+    .pl-item.ativa { background: rgba(167,139,250,.15); color: #a78bfa; }
+    .pl-num { font-size: .75rem; color: #64748b; width: 16px; text-align: center; }
+    .pl-info { flex: 1; }
+    .pl-nome { font-size: .83rem; font-weight: 500; }
+    .pl-dur  { font-size: .75rem; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="player">
+    <div class="capa">
+      <span class="capa-icone" id="capaIcone">🎵</span>
+    </div>
+
+    <div class="musica-info">
+      <div class="musica-nome"    id="musicaNome">Selecione uma música</div>
+      <div class="musica-artista" id="musicaArtista">—</div>
+    </div>
+
+    <div class="progresso-wrap">
+      <div class="tempos">
+        <span id="tempoAtual">0:00</span>
+        <span id="tempoDur">0:00</span>
+      </div>
+      <div class="barra-fundo"><div class="barra-prog" id="barraProgresso"></div></div>
+    </div>
+
+    <div class="controles">
+      <button class="btn-ctrl" id="btnAnterior" title="Anterior">⏮</button>
+      <button class="btn-play" id="btnPlay">▶</button>
+      <button class="btn-ctrl" id="btnProxima" title="Próxima">⏭</button>
+    </div>
+
+    <div class="volume-area">
+      <span class="vol-icone" id="volIcone">🔉</span>
+      <input type="range" id="volume" min="0" max="100" value="70">
+      <span class="vol-percent" id="volPercent">70%</span>
+    </div>
+
+    <div class="status" id="status">Pausado</div>
+
+    <div class="playlist">
+      <div class="pl-title">Playlist</div>
+      <div id="listaPlaylist"></div>
+    </div>
+  </div>
+
+  <script>
+    const playlist = [
+      { nome: 'Blinding Lights',    artista: 'The Weeknd',     dur: '3:20', emoji: '🌃' },
+      { nome: 'Levitating',         artista: 'Dua Lipa',       dur: '3:23', emoji: '🪐' },
+      { nome: 'Stay',               artista: 'The Kid LAROI',  dur: '2:21', emoji: '💫' },
+      { nome: 'As It Was',          artista: 'Harry Styles',   dur: '2:37', emoji: '🌿' },
+      { nome: 'Flowers',            artista: 'Miley Cyrus',    dur: '3:21', emoji: '🌸' },
+    ];
+
+    let indiceAtual = 0;
+    let tocando     = false;
+    let progresso   = 0;
+    let intervalo   = null;
+
+    const btnPlay     = document.getElementById('btnPlay');
+    const musicaNome  = document.getElementById('musicaNome');
+    const musicaArtista = document.getElementById('musicaArtista');
+    const barraProgresso = document.getElementById('barraProgresso');
+    const capaIcone   = document.getElementById('capaIcone');
+    const status      = document.getElementById('status');
+    const tempoAtual  = document.getElementById('tempoAtual');
+    const tempoDur    = document.getElementById('tempoDur');
+
+    function duracaoEmSegundos(dur) {
+      const p = dur.split(':');
+      return parseInt(p[0]) * 60 + parseInt(p[1]);
+    }
+
+    function formatarTempo(s) {
+      return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    }
+
+    function carregarMusica(i) {
+      indiceAtual = i;
+      const m = playlist[i];
+      musicaNome.textContent    = m.nome;
+      musicaArtista.textContent = m.artista;
+      tempoDur.textContent      = m.dur;
+      capaIcone.textContent     = m.emoji;
+      progresso = 0;
+      barraProgresso.style.width = '0%';
+      tempoAtual.textContent = '0:00';
+      renderPlaylist();
+    }
+
+    function renderPlaylist() {
+      const lista = document.getElementById('listaPlaylist');
+      lista.innerHTML = '';
+      playlist.forEach(function(m, i) {
+        const div = document.createElement('div');
+        div.className = 'pl-item' + (i === indiceAtual ? ' ativa' : '');
+        div.innerHTML = `<span class="pl-num">${i === indiceAtual && tocando ? '▶' : (i + 1)}</span><div class="pl-info"><div class="pl-nome">${m.emoji} ${m.nome}</div><div>${m.artista}</div></div><span class="pl-dur">${m.dur}</span>`;
+        div.addEventListener('click', function() {
+          pararProgresso();
+          carregarMusica(i);
+          iniciarProgresso();
+        });
+        lista.appendChild(div);
+      });
+    }
+
+    function iniciarProgresso() {
+      tocando = true;
+      btnPlay.textContent = '⏸';
+      capaIcone.classList.add('tocando');
+      status.textContent  = `▶ Reproduzindo: ${playlist[indiceAtual].nome}`;
+      const total = duracaoEmSegundos(playlist[indiceAtual].dur);
+
+      intervalo = setInterval(function() {
+        progresso++;
+        barraProgresso.style.width = (progresso / total * 100) + '%';
+        tempoAtual.textContent = formatarTempo(progresso);
+        if (progresso >= total) {
+          pararProgresso();
+          if (indiceAtual < playlist.length - 1) {
+            carregarMusica(indiceAtual + 1);
+            iniciarProgresso();
+          } else {
+            status.textContent = '✅ Fim da playlist';
+          }
+        }
+      }, 1000);
+      renderPlaylist();
+    }
+
+    function pararProgresso() {
+      tocando = false;
+      clearInterval(intervalo);
+      btnPlay.textContent = '▶';
+      capaIcone.classList.remove('tocando');
+      status.textContent  = 'Pausado';
+    }
+
+    btnPlay.addEventListener('click', function() {
+      if (tocando) { pararProgresso(); } else { iniciarProgresso(); }
+    });
+
+    document.getElementById('btnAnterior').addEventListener('click', function() {
+      pararProgresso();
+      carregarMusica((indiceAtual - 1 + playlist.length) % playlist.length);
+    });
+
+    document.getElementById('btnProxima').addEventListener('click', function() {
+      pararProgresso();
+      carregarMusica((indiceAtual + 1) % playlist.length);
+    });
+
+    const volumeInput = document.getElementById('volume');
+    const volIcone    = document.getElementById('volIcone');
+    const volPercent  = document.getElementById('volPercent');
+
+    volumeInput.addEventListener('input', function() {
+      const v = parseInt(this.value);
+      volPercent.textContent = v + '%';
+      volIcone.textContent   = v === 0 ? '🔇' : v < 40 ? '🔈' : v < 75 ? '🔉' : '🔊';
+    });
+
+    carregarMusica(0);
+  </script>
+</body>
+</html>

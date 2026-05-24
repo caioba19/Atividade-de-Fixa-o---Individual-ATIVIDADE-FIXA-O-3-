@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q13 — Calculadora de IMC</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #1e293b; padding: 2rem; border-radius: 12px; width: 380px; border: 1px solid #334155; }
+    h1 { font-size: 1.4rem; margin-bottom: 1.5rem; color: #2dd4bf; }
+    label { display: block; margin-bottom: .3rem; font-size: .85rem; color: #94a3b8; }
+    input { width: 100%; padding: .65rem .9rem; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; font-size: .95rem; margin-bottom: 1rem; outline: none; transition: border .2s; }
+    input:focus { border-color: #2dd4bf; }
+    .resultado { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 1.2rem; margin-top: .5rem; display: none; }
+    .imc-valor { font-size: 2.5rem; font-weight: 700; text-align: center; }
+    .imc-class  { text-align: center; font-size: 1rem; margin-top: .3rem; font-weight: 600; }
+    .tabela { margin-top: 1.2rem; border-top: 1px solid #334155; padding-top: 1rem; }
+    .tabela-titulo { font-size: .75rem; color: #64748b; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .5rem; }
+    .linha-tab { display: flex; justify-content: space-between; font-size: .8rem; padding: .25rem 0; border-bottom: 1px solid #1e293b; }
+    .linha-tab span:last-child { color: #64748b; }
+    .ativo { color: #2dd4bf !important; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>⚕️ Calculadora de IMC</h1>
+    <label>Peso (kg)</label>
+    <input type="number" id="peso" placeholder="Ex: 70" min="1" step="0.1">
+    <label>Altura (m)</label>
+    <input type="number" id="altura" placeholder="Ex: 1.75" min="0.5" step="0.01">
+
+    <div class="resultado" id="resultado">
+      <div class="imc-valor" id="imcValor">—</div>
+      <div class="imc-class" id="imcClass">—</div>
+      <div class="tabela">
+        <div class="tabela-titulo">Classificação OMS</div>
+        <div class="linha-tab" id="t1"><span>Abaixo do peso</span><span>Abaixo de 18.5</span></div>
+        <div class="linha-tab" id="t2"><span>Peso normal</span><span>18.5 – 24.9</span></div>
+        <div class="linha-tab" id="t3"><span>Sobrepeso</span><span>25.0 – 29.9</span></div>
+        <div class="linha-tab" id="t4"><span>Obesidade I</span><span>30.0 – 34.9</span></div>
+        <div class="linha-tab" id="t5"><span>Obesidade II</span><span>35.0 – 39.9</span></div>
+        <div class="linha-tab" id="t6"><span>Obesidade III</span><span>Acima de 40</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const pesoInput  = document.getElementById('peso');
+    const alturaInput= document.getElementById('altura');
+    const resultado  = document.getElementById('resultado');
+    const imcValor   = document.getElementById('imcValor');
+    const imcClass   = document.getElementById('imcClass');
+
+    function calcularIMC() {
+      const peso   = parseFloat(pesoInput.value);
+      const altura = parseFloat(alturaInput.value);
+
+      if (!peso || !altura || peso <= 0 || altura <= 0) {
+        resultado.style.display = 'none';
+        return;
+      }
+
+      const imc = peso / (altura * altura);
+      imcValor.textContent = imc.toFixed(2);
+
+      // Limpar destaque
+      ['t1','t2','t3','t4','t5','t6'].forEach(id => {
+        document.getElementById(id).querySelectorAll('span').forEach(s => s.classList.remove('ativo'));
+      });
+
+      let classe, tabId, cor;
+      if      (imc < 18.5)  { classe = '😟 Abaixo do peso'; tabId = 't1'; cor = '#60a5fa'; }
+      else if (imc < 25)    { classe = '✅ Peso normal';     tabId = 't2'; cor = '#34d399'; }
+      else if (imc < 30)    { classe = '⚠️ Sobrepeso';       tabId = 't3'; cor = '#fbbf24'; }
+      else if (imc < 35)    { classe = '🔶 Obesidade grau I'; tabId = 't4'; cor = '#fb923c'; }
+      else if (imc < 40)    { classe = '🔴 Obesidade grau II'; tabId = 't5'; cor = '#f87171'; }
+      else                  { classe = '🚨 Obesidade grau III'; tabId = 't6'; cor = '#dc2626'; }
+
+      imcClass.textContent = classe;
+      imcValor.style.color = cor;
+      imcClass.style.color = cor;
+      document.getElementById(tabId).querySelectorAll('span').forEach(s => s.classList.add('ativo'));
+      resultado.style.display = 'block';
+    }
+
+    pesoInput.addEventListener('blur', calcularIMC);
+    alturaInput.addEventListener('blur', calcularIMC);
+  </script>
+</body>
+</html>

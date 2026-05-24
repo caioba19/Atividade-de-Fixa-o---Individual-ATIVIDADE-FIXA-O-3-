@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q16 — Sistema de Notificações</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #1e293b; border-radius: 12px; border: 1px solid #334155; width: 380px; overflow: hidden; }
+    .navbar { background: #0f172a; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; }
+    .navbar h2 { font-size: 1rem; font-weight: 700; color: #c084fc; }
+    .icones { display: flex; gap: 1.2rem; align-items: center; }
+    .icone-wrap { position: relative; cursor: pointer; }
+    .icone-wrap .icone { font-size: 1.4rem; }
+    .badge { position: absolute; top: -6px; right: -8px; background: #f87171; color: #fff; font-size: .65rem; font-weight: 700; border-radius: 10px; padding: 1px 5px; }
+    .popup { position: absolute; right: 0; top: calc(100% + 10px); background: #1e293b; border: 1px solid #334155; border-radius: 10px; width: 260px; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,.5); display: none; }
+    .popup.visivel { display: block; animation: fadeIn .2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .popup-header { padding: .6rem 1rem; border-bottom: 1px solid #334155; font-size: .8rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+    .popup-header span { color: #64748b; font-weight: 400; }
+    .notif { padding: .7rem 1rem; border-bottom: 1px solid #1e2940; display: flex; gap: .6rem; align-items: flex-start; }
+    .notif:last-child { border: none; }
+    .notif.nova { background: rgba(192,132,252,.06); }
+    .notif-emoji { font-size: 1.2rem; flex-shrink: 0; }
+    .notif-texto { font-size: .8rem; line-height: 1.4; }
+    .notif-tempo { font-size: .72rem; color: #64748b; }
+    .conteudo { padding: 2rem; text-align: center; }
+    .conteudo p { color: #64748b; font-size: .85rem; }
+    .instrucao { background: rgba(192,132,252,.1); border: 1px solid rgba(192,132,252,.2); border-radius: 8px; padding: .75rem 1rem; margin-top: 1rem; font-size: .8rem; color: #c084fc; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="navbar">
+      <h2>📱 Rede Social</h2>
+      <div class="icones">
+        <div class="icone-wrap" id="iconeMensagens">
+          <span class="icone">💬</span>
+          <span class="badge">3</span>
+          <div class="popup" id="popupMensagens">
+            <div class="popup-header">Mensagens <span>3 novas</span></div>
+            <div class="notif nova"><span class="notif-emoji">👤</span><div><div class="notif-texto">João te enviou uma mensagem</div><div class="notif-tempo">2 min atrás</div></div></div>
+            <div class="notif nova"><span class="notif-emoji">👥</span><div><div class="notif-texto">Grupo da turma: "Não se esqueçam da prova amanhã!"</div><div class="notif-tempo">15 min atrás</div></div></div>
+            <div class="notif nova"><span class="notif-emoji">👤</span><div><div class="notif-texto">Maria: "Ei, você viu o projeto?"</div><div class="notif-tempo">1 hora atrás</div></div></div>
+            <div class="notif"><span class="notif-emoji">👤</span><div><div class="notif-texto">Pedro: "Beleza, obrigado!"</div><div class="notif-tempo">3 horas atrás</div></div></div>
+          </div>
+        </div>
+
+        <div class="icone-wrap" id="iconeNotif">
+          <span class="icone">🔔</span>
+          <span class="badge">5</span>
+          <div class="popup" id="popupNotif">
+            <div class="popup-header">Notificações <span>5 novas</span></div>
+            <div class="notif nova"><span class="notif-emoji">❤️</span><div><div class="notif-texto">Ana curtiu sua foto</div><div class="notif-tempo">5 min atrás</div></div></div>
+            <div class="notif nova"><span class="notif-emoji">💬</span><div><div class="notif-texto">Lucas comentou: "Muito bom!"</div><div class="notif-tempo">20 min atrás</div></div></div>
+            <div class="notif nova"><span class="notif-emoji">👤</span><div><div class="notif-texto">Carlos começou a te seguir</div><div class="notif-tempo">1 hora atrás</div></div></div>
+            <div class="notif nova"><span class="notif-emoji">🔁</span><div><div class="notif-texto">Sua publicação foi compartilhada</div><div class="notif-tempo">2 horas atrás</div></div></div>
+            <div class="notif nova"><span class="notif-emoji">🎉</span><div><div class="notif-texto">Hoje é aniversário de Julia!</div><div class="notif-tempo">hoje</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="conteudo">
+      <p>Navegue pela rede social</p>
+      <div class="instrucao">💡 Passe o mouse sobre os ícones <b>💬</b> e <b>🔔</b> na barra para ver as notificações</div>
+    </div>
+  </div>
+
+  <script>
+    function configurarPopup(iconeId, popupId) {
+      const icone = document.getElementById(iconeId);
+      const popup = document.getElementById(popupId);
+
+      icone.addEventListener('mouseover', function() {
+        popup.classList.add('visivel');
+      });
+      icone.addEventListener('mouseout', function() {
+        popup.classList.remove('visivel');
+      });
+    }
+
+    configurarPopup('iconeMensagens', 'popupMensagens');
+    configurarPopup('iconeNotif', 'popupNotif');
+  </script>
+</body>
+</html>

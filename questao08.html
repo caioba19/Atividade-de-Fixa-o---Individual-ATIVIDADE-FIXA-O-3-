@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q08 — Sistema Bancário</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #1e293b; padding: 2rem; border-radius: 12px; width: 400px; border: 1px solid #334155; }
+    h1 { font-size: 1.4rem; margin-bottom: .5rem; color: #34d399; }
+    .saldo-area { background: #0f172a; border-radius: 10px; padding: 1rem 1.2rem; margin-bottom: 1.5rem; border: 1px solid #334155; }
+    .saldo-label { font-size: .75rem; color: #64748b; text-transform: uppercase; letter-spacing: .05em; }
+    .saldo-valor { font-size: 1.8rem; font-weight: 700; color: #34d399; }
+    label { display: block; margin-bottom: .3rem; font-size: .85rem; color: #94a3b8; }
+    input { width: 100%; padding: .65rem .9rem; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; font-size: .95rem; margin-bottom: 1rem; outline: none; transition: border .2s; }
+    input:focus { border-color: #34d399; }
+    button { width: 100%; padding: .75rem; background: #34d399; color: #052e16; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+    button:hover { background: #6ee7b7; }
+    .msg { margin-top: 1rem; padding: .8rem 1rem; border-radius: 8px; font-size: .9rem; display: none; }
+    .msg.erro    { background: #450a0a; color: #fca5a5; border: 1px solid #7f1d1d; display: block; }
+    .msg.sucesso { background: #052e16; color: #86efac; border: 1px solid #14532d; display: block; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🏦 Banco Digital</h1>
+    <div class="saldo-area">
+      <div class="saldo-label">Saldo disponível</div>
+      <div class="saldo-valor" id="saldoDisplay">R$ 1.500,00</div>
+    </div>
+    <label>Destinatário</label>
+    <input type="text" id="destinatario" placeholder="Nome ou CPF">
+    <label>Valor da transferência (R$)</label>
+    <input type="number" id="valor" placeholder="0,00" min="0" step="0.01">
+    <button id="btnTransferir">Transferir</button>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <script>
+    let saldo = 1500.00;
+
+    function formatarReais(v) {
+      return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    document.getElementById('btnTransferir').addEventListener('click', function() {
+      const destinatario = document.getElementById('destinatario').value.trim();
+      const valor        = parseFloat(document.getElementById('valor').value);
+      const msg          = document.getElementById('msg');
+
+      msg.className = 'msg';
+
+      if (!destinatario) {
+        msg.textContent = '⚠️ Informe o destinatário.';
+        msg.classList.add('erro');
+        return;
+      }
+      if (!valor || valor <= 0) {
+        msg.textContent = '⚠️ Digite um valor válido para transferir.';
+        msg.classList.add('erro');
+        return;
+      }
+      if (saldo < 50) {
+        msg.textContent = `❌ Saldo insuficiente. Saldo mínimo de R$ 50,00 exigido.`;
+        msg.classList.add('erro');
+        return;
+      }
+      if (valor > saldo) {
+        msg.textContent = `❌ Saldo insuficiente. Você tem ${formatarReais(saldo)}.`;
+        msg.classList.add('erro');
+        return;
+      }
+
+      const confirmar = confirm(`Confirmar transferência de ${formatarReais(valor)} para "${destinatario}"?`);
+      if (!confirmar) return;
+
+      saldo -= valor;
+      document.getElementById('saldoDisplay').textContent = formatarReais(saldo);
+      document.getElementById('destinatario').value = '';
+      document.getElementById('valor').value = '';
+
+      msg.textContent = `✅ Transferência de ${formatarReais(valor)} para ${destinatario} realizada com sucesso!`;
+      msg.classList.add('sucesso');
+    });
+  </script>
+</body>
+</html>

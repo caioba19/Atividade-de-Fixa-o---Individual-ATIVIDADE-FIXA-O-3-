@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q06 — Controle de Luminosidade</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #1e293b; padding: 2.5rem 2rem; border-radius: 12px; width: 380px; border: 1px solid #334155; text-align: center; }
+    h1 { font-size: 1.4rem; margin-bottom: 2rem; color: #fbbf24; }
+    .lampada { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 1.5rem; transition: background .3s, box-shadow .3s; background: #1c1917; box-shadow: none; position: relative; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+    .percentual { font-size: 2rem; font-weight: 700; margin-bottom: .3rem; color: #fbbf24; }
+    .descricao  { font-size: .85rem; color: #94a3b8; margin-bottom: 1.5rem; }
+    input[type="range"] { width: 100%; -webkit-appearance: none; height: 8px; border-radius: 4px; background: #334155; outline: none; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: #fbbf24; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>💡 Controle de Luminosidade</h1>
+    <div class="lampada" id="lampada">💡</div>
+    <div class="percentual" id="percentual">0%</div>
+    <div class="descricao" id="descricao">Lâmpada apagada</div>
+    <input type="range" id="slider" min="0" max="100" value="0">
+  </div>
+
+  <script>
+    const slider     = document.getElementById('slider');
+    const lampada    = document.getElementById('lampada');
+    const percentual = document.getElementById('percentual');
+    const descricao  = document.getElementById('descricao');
+
+    slider.addEventListener('input', function() {
+      const valor = parseInt(this.value);
+      percentual.textContent = valor + '%';
+
+      // Intensidade de cor (amarelo quente)
+      const r = Math.round(30  + (225 * valor / 100));
+      const g = Math.round(20  + (160 * valor / 100));
+      const b = Math.round(10  + (20  * valor / 100));
+      const brilho = valor / 100;
+
+      lampada.style.background = `rgb(${r}, ${g}, ${b})`;
+      lampada.style.boxShadow  = valor > 0
+        ? `0 0 ${valor * 0.8}px ${valor * 0.4}px rgba(251, 191, 36, ${brilho * 0.8})`
+        : 'none';
+
+      if (valor === 0) {
+        descricao.textContent = 'Lâmpada apagada';
+        lampada.textContent = '💡';
+      } else if (valor <= 30) {
+        descricao.textContent = 'Luz baixa — ambiente relaxante';
+        lampada.textContent = '💡';
+      } else if (valor <= 70) {
+        descricao.textContent = 'Luz moderada — ideal para trabalho';
+        lampada.textContent = '💡';
+      } else {
+        descricao.textContent = 'Luz intensa — máxima claridade';
+        lampada.textContent = '🌟';
+      }
+    });
+  </script>
+</body>
+</html>

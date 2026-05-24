@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q14 — Upload de Arquivos</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #1e293b; padding: 2rem; border-radius: 12px; width: 420px; border: 1px solid #334155; }
+    h1 { font-size: 1.4rem; margin-bottom: 1.5rem; color: #818cf8; }
+    .zona-upload { border: 2px dashed #334155; border-radius: 10px; padding: 2.5rem 1.5rem; text-align: center; cursor: pointer; transition: border .2s, background .2s; position: relative; }
+    .zona-upload:hover, .zona-upload.drag { border-color: #818cf8; background: rgba(129,140,248,.05); }
+    .zona-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .zona-icone { font-size: 2.5rem; margin-bottom: .5rem; }
+    .zona-texto { font-size: .9rem; color: #94a3b8; }
+    .zona-sub   { font-size: .75rem; color: #64748b; margin-top: .3rem; }
+    .arquivos-lista { margin-top: 1rem; display: flex; flex-direction: column; gap: .5rem; }
+    .arquivo-item { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: .6rem .9rem; display: flex; align-items: center; gap: .75rem; animation: slideIn .2s ease; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .arquivo-icone { font-size: 1.4rem; flex-shrink: 0; }
+    .arquivo-info { flex: 1; overflow: hidden; }
+    .arquivo-nome { font-size: .85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .arquivo-tamanho { font-size: .75rem; color: #64748b; }
+    .arquivo-remover { background: none; border: none; color: #64748b; cursor: pointer; font-size: 1rem; padding: .2rem; }
+    .arquivo-remover:hover { color: #f87171; }
+    .sem-arquivos { text-align: center; color: #64748b; font-size: .85rem; padding: .5rem; display: none; }
+    .btn-enviar { margin-top: 1rem; width: 100%; padding: .75rem; background: #818cf8; color: #0f172a; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; display: none; }
+    .btn-enviar:hover { background: #a5b4fc; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📎 Upload de Arquivos</h1>
+
+    <div class="zona-upload" id="zonaUpload">
+      <input type="file" id="inputArquivo" multiple>
+      <div class="zona-icone">☁️</div>
+      <div class="zona-texto">Clique ou arraste arquivos aqui</div>
+      <div class="zona-sub">PDF, DOCX, XLSX, imagens — até 10MB</div>
+    </div>
+
+    <div class="arquivos-lista" id="arquivosLista"></div>
+    <div class="sem-arquivos" id="semArquivos">Nenhum arquivo selecionado ainda.</div>
+    <button class="btn-enviar" id="btnEnviar">📤 Enviar Arquivos</button>
+  </div>
+
+  <script>
+    const inputArquivo  = document.getElementById('inputArquivo');
+    const arquivosLista = document.getElementById('arquivosLista');
+    const btnEnviar     = document.getElementById('btnEnviar');
+    let arquivos = [];
+
+    function iconeArquivo(tipo) {
+      if (tipo.includes('pdf'))   return '📄';
+      if (tipo.includes('image')) return '🖼️';
+      if (tipo.includes('word') || tipo.includes('docx')) return '📝';
+      if (tipo.includes('sheet') || tipo.includes('xlsx')) return '📊';
+      if (tipo.includes('zip') || tipo.includes('rar')) return '🗜️';
+      return '📁';
+    }
+
+    function formatarTamanho(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function renderizar() {
+      arquivosLista.innerHTML = '';
+      arquivos.forEach(function(arq, i) {
+        const item = document.createElement('div');
+        item.className = 'arquivo-item';
+        item.innerHTML = `
+          <span class="arquivo-icone">${iconeArquivo(arq.type)}</span>
+          <div class="arquivo-info">
+            <div class="arquivo-nome">${arq.name}</div>
+            <div class="arquivo-tamanho">${formatarTamanho(arq.size)}</div>
+          </div>
+          <button class="arquivo-remover" data-index="${i}" title="Remover">✕</button>
+        `;
+        arquivosLista.appendChild(item);
+      });
+
+      btnEnviar.style.display       = arquivos.length > 0 ? 'block' : 'none';
+      document.getElementById('semArquivos').style.display = 'none';
+    }
+
+    inputArquivo.addEventListener('change', function() {
+      Array.from(this.files).forEach(function(f) { arquivos.push(f); });
+      renderizar();
+    });
+
+    arquivosLista.addEventListener('click', function(e) {
+      const btn = e.target.closest('.arquivo-remover');
+      if (btn) {
+        arquivos.splice(parseInt(btn.dataset.index), 1);
+        renderizar();
+      }
+    });
+
+    btnEnviar.addEventListener('click', function() {
+      alert(`✅ ${arquivos.length} arquivo(s) enviado(s) com sucesso!`);
+      arquivos = [];
+      renderizar();
+      document.getElementById('semArquivos').style.display = 'block';
+    });
+  </script>
+</body>
+</html>

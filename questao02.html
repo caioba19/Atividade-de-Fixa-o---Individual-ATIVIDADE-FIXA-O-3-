@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q02 — Controle de Temperatura de Servidor</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; transition: background 0.5s; background: #0f172a; color: #e2e8f0; }
+    .card { background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); padding: 2rem; border-radius: 12px; width: 380px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+    h1 { font-size: 1.4rem; margin-bottom: 1.5rem; }
+    label { display: block; margin-bottom: .5rem; font-size: .85rem; opacity: .7; }
+    input { width: 100%; padding: .75rem 1rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 1.5rem; text-align: center; outline: none; }
+    .status { margin-top: 1.5rem; font-size: 1rem; font-weight: 600; padding: .5rem 1rem; border-radius: 8px; background: rgba(0,0,0,0.3); min-height: 2.5rem; display: flex; align-items: center; justify-content: center; }
+    .termometro { font-size: 4rem; margin: 1rem 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🖥️ Monitor de Temperatura</h1>
+    <div class="termometro" id="icone">🌡️</div>
+    <label>Temperatura atual (°C)</label>
+    <input type="number" id="temp" placeholder="Ex: 45">
+    <div class="status" id="status">Digite a temperatura...</div>
+  </div>
+
+  <script>
+    const input  = document.getElementById('temp');
+    const status = document.getElementById('status');
+    const icone  = document.getElementById('icone');
+
+    input.addEventListener('keyup', function() {
+      const valor = parseFloat(this.value);
+
+      if (isNaN(valor)) {
+        document.body.style.background = '#0f172a';
+        status.textContent = 'Digite um valor numérico.';
+        icone.textContent = '🌡️';
+        return;
+      }
+
+      if (valor < 40) {
+        document.body.style.background = '#052e16';
+        status.textContent = `✅ ${valor}°C — Normal. Temperatura segura.`;
+        icone.textContent = '🟢';
+      } else if (valor <= 70) {
+        document.body.style.background = '#422006';
+        status.textContent = `⚠️ ${valor}°C — Atenção! Temperatura elevada.`;
+        icone.textContent = '🟡';
+      } else {
+        document.body.style.background = '#450a0a';
+        status.textContent = `🚨 ${valor}°C — CRÍTICO! Resfriamento necessário!`;
+        icone.textContent = '🔴';
+      }
+    });
+  </script>
+</body>
+</html>

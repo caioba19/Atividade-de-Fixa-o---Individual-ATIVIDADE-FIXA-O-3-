@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q19 — Conversão Monetária</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #1e293b; padding: 2rem; border-radius: 12px; width: 400px; border: 1px solid #334155; }
+    h1 { font-size: 1.4rem; margin-bottom: .3rem; color: #34d399; }
+    .sub { font-size: .8rem; color: #64748b; margin-bottom: 1.5rem; }
+    .cotacao-badge { background: #052e16; border: 1px solid #14532d; border-radius: 6px; padding: .3rem .8rem; font-size: .8rem; color: #86efac; display: inline-flex; align-items: center; gap: .4rem; margin-bottom: 1.5rem; }
+    .campo { margin-bottom: 1.2rem; }
+    label { display: block; font-size: .8rem; color: #64748b; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .4rem; }
+    .input-moeda { position: relative; }
+    .input-moeda .prefixo { position: absolute; left: .9rem; top: 50%; transform: translateY(-50%); font-weight: 700; color: #64748b; }
+    .input-moeda input { width: 100%; padding: .75rem .9rem .75rem 3.2rem; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; font-size: 1.4rem; outline: none; transition: border .2s; }
+    .input-moeda input:focus { border-color: #34d399; }
+    .seta { text-align: center; font-size: 1.5rem; color: #334155; margin: .5rem 0; }
+    .resultado-area { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 1.2rem 1.5rem; }
+    .resultado-valor { font-size: 2rem; font-weight: 700; color: #34d399; }
+    .resultado-label { font-size: .8rem; color: #64748b; margin-top: .2rem; }
+    .info-taxa { margin-top: 1.2rem; display: flex; justify-content: space-between; font-size: .8rem; color: #64748b; border-top: 1px solid #1e293b; padding-top: .8rem; }
+    .input-taxa { display: flex; align-items: center; gap: .5rem; }
+    .input-taxa input { width: 80px; padding: .3rem .5rem; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: #e2e8f0; font-size: .85rem; outline: none; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>💱 Casa de Câmbio</h1>
+    <p class="sub">Conversão em tempo real enquanto você digita.</p>
+
+    <div class="cotacao-badge">📈 Cotação simulada</div>
+
+    <div class="campo">
+      <label>Valor em Reais</label>
+      <div class="input-moeda">
+        <span class="prefixo">R$</span>
+        <input type="number" id="valorBRL" placeholder="0,00" min="0" step="0.01">
+      </div>
+    </div>
+
+    <div class="seta">⬇️</div>
+
+    <div class="resultado-area">
+      <label style="font-size:.75rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em">Resultado em Dólares</label>
+      <div class="resultado-valor" id="resultado">US$ 0,00</div>
+      <div class="resultado-label" id="resultadoLabel">Digite um valor acima para converter</div>
+    </div>
+
+    <div class="info-taxa">
+      <span>💡 Taxa de câmbio:</span>
+      <div class="input-taxa">
+        <span>1 USD =</span>
+        <input type="number" id="taxa" value="5.25" step="0.01" min="0.01">
+        <span>BRL</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const valorInput = document.getElementById('valorBRL');
+    const taxaInput  = document.getElementById('taxa');
+    const resultado  = document.getElementById('resultado');
+    const label      = document.getElementById('resultadoLabel');
+
+    function converter() {
+      const brl  = parseFloat(valorInput.value) || 0;
+      const taxa = parseFloat(taxaInput.value)  || 5.25;
+      const usd  = brl / taxa;
+
+      resultado.textContent = 'US$ ' + usd.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      if (brl > 0) {
+        label.textContent = `R$ ${brl.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} = US$ ${usd.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} (taxa: R$ ${taxa.toFixed(2)}/USD)`;
+      } else {
+        label.textContent = 'Digite um valor acima para converter';
+      }
+    }
+
+    valorInput.addEventListener('input', converter);
+    taxaInput.addEventListener('input', converter);
+  </script>
+</body>
+</html>

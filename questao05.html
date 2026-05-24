@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q05 — Força da Senha</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #1e293b; padding: 2rem; border-radius: 12px; width: 380px; border: 1px solid #334155; }
+    h1 { font-size: 1.4rem; margin-bottom: 1.5rem; color: #f472b6; }
+    label { display: block; margin-bottom: .3rem; font-size: .85rem; color: #94a3b8; }
+    input { width: 100%; padding: .65rem .9rem; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; font-size: .95rem; margin-bottom: 1rem; outline: none; transition: border .2s; }
+    input:focus { border-color: #f472b6; }
+    .forca-wrap { margin-bottom: 1rem; }
+    .barras { display: flex; gap: 6px; margin-bottom: .5rem; }
+    .barra { flex: 1; height: 6px; border-radius: 3px; background: #334155; transition: background .3s; }
+    .forca-texto { font-size: .85rem; font-weight: 600; }
+    .fraca  .barra:nth-child(1)              { background: #f87171; }
+    .media  .barra:nth-child(1),
+    .media  .barra:nth-child(2)              { background: #fbbf24; }
+    .forte  .barra:nth-child(1),
+    .forte  .barra:nth-child(2),
+    .forte  .barra:nth-child(3)              { background: #34d399; }
+    .fraca  .forca-texto { color: #f87171; }
+    .media  .forca-texto { color: #fbbf24; }
+    .forte  .forca-texto { color: #34d399; }
+    button { width: 100%; padding: .75rem; background: #f472b6; color: #0f172a; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #f9a8d4; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🔐 Cadastro de Usuário</h1>
+    <label>Nome completo</label>
+    <input type="text" id="nome" placeholder="Seu nome">
+    <label>Email</label>
+    <input type="email" id="email" placeholder="seu@email.com">
+    <label>Senha</label>
+    <input type="password" id="senha" placeholder="Crie sua senha">
+    <div class="forca-wrap" id="forcaWrap">
+      <div class="barras">
+        <div class="barra"></div>
+        <div class="barra"></div>
+        <div class="barra"></div>
+      </div>
+      <span class="forca-texto" id="forcaTexto">Digite uma senha</span>
+    </div>
+    <button type="button" id="btnCadastrar">Cadastrar</button>
+  </div>
+
+  <script>
+    const senhaInput = document.getElementById('senha');
+    const forcaWrap  = document.getElementById('forcaWrap');
+    const forcaTexto = document.getElementById('forcaTexto');
+
+    senhaInput.addEventListener('keyup', function() {
+      const tamanho = this.value.length;
+
+      forcaWrap.className = 'forca-wrap';
+
+      if (tamanho === 0) {
+        forcaTexto.textContent = 'Digite uma senha';
+        return;
+      }
+
+      if (tamanho < 6) {
+        forcaWrap.classList.add('fraca');
+        forcaTexto.textContent = '⚠️ Senha fraca (menos de 6 caracteres)';
+      } else if (tamanho <= 8) {
+        forcaWrap.classList.add('media');
+        forcaTexto.textContent = '🟡 Senha média (6 a 8 caracteres)';
+      } else {
+        forcaWrap.classList.add('forte');
+        forcaTexto.textContent = '✅ Senha forte (mais de 8 caracteres)';
+      }
+    });
+
+    document.getElementById('btnCadastrar').addEventListener('click', function() {
+      const nome  = document.getElementById('nome').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value;
+
+      if (!nome || !email || !senha) {
+        alert('Preencha todos os campos!');
+        return;
+      }
+      if (senha.length < 6) {
+        alert('Sua senha é muito fraca. Use pelo menos 6 caracteres.');
+        return;
+      }
+      alert(`Cadastro realizado com sucesso!\nBem-vindo(a), ${nome}! 🎉`);
+    });
+  </script>
+</body>
+</html>

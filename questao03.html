@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q03 — Sistema de Comentários</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #1e293b; padding: 2rem; border-radius: 12px; width: 420px; border: 1px solid #334155; }
+    h1 { font-size: 1.4rem; margin-bottom: 1.5rem; color: #a78bfa; }
+    textarea { width: 100%; height: 130px; padding: .75rem 1rem; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; font-size: .95rem; resize: none; outline: none; transition: border .2s; }
+    textarea:focus { border-color: #a78bfa; }
+    .rodape { display: flex; justify-content: space-between; align-items: center; margin-top: .75rem; }
+    .contador { font-size: .9rem; font-weight: 600; }
+    .contador.ok      { color: #86efac; }
+    .contador.alerta  { color: #fbbf24; }
+    .contador.limite  { color: #f87171; }
+    .barra-fundo { width: 100%; height: 4px; background: #334155; border-radius: 2px; margin-top: .5rem; }
+    .barra { height: 4px; border-radius: 2px; transition: width .2s, background .2s; background: #86efac; width: 0%; }
+    button { margin-top: 1rem; width: 100%; padding: .7rem; background: #a78bfa; color: #0f172a; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #c4b5fd; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>💬 Novo Comentário</h1>
+    <textarea id="comentario" placeholder="Escreva seu comentário..."></textarea>
+    <div class="barra-fundo"><div class="barra" id="barra"></div></div>
+    <div class="rodape">
+      <span style="font-size:.8rem;color:#64748b;">Máximo 200 caracteres</span>
+      <span class="contador ok" id="contador">200 restantes</span>
+    </div>
+    <button id="btn">Publicar</button>
+  </div>
+
+  <script>
+    const LIMITE = 200;
+    const textarea  = document.getElementById('comentario');
+    const contador  = document.getElementById('contador');
+    const barra     = document.getElementById('barra');
+    const btn       = document.getElementById('btn');
+
+    textarea.addEventListener('input', function() {
+      const digitados  = this.value.length;
+      const restantes  = LIMITE - digitados;
+      const porcentagem = (digitados / LIMITE) * 100;
+
+      if (digitados > LIMITE) {
+        this.value = this.value.slice(0, LIMITE);
+        return;
+      }
+
+      contador.textContent = `${restantes} restante${restantes !== 1 ? 's' : ''}`;
+      barra.style.width = porcentagem + '%';
+
+      contador.className = 'contador';
+      if (restantes > 50) {
+        contador.classList.add('ok');
+        barra.style.background = '#86efac';
+      } else if (restantes > 10) {
+        contador.classList.add('alerta');
+        barra.style.background = '#fbbf24';
+      } else {
+        contador.classList.add('limite');
+        barra.style.background = '#f87171';
+      }
+    });
+
+    btn.addEventListener('click', function() {
+      if (textarea.value.trim() === '') {
+        alert('Escreva algo antes de publicar!');
+        return;
+      }
+      alert('Comentário publicado com sucesso!');
+      textarea.value = '';
+      contador.textContent = '200 restantes';
+      contador.className = 'contador ok';
+      barra.style.width = '0%';
+    });
+  </script>
+</body>
+</html>

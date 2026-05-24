@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q10 — Controle de Estoque</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #1e293b; padding: 2rem; border-radius: 12px; width: 400px; border: 1px solid #334155; }
+    h1 { font-size: 1.4rem; margin-bottom: 1.5rem; color: #fb923c; }
+    .produto { background: #0f172a; border-radius: 10px; padding: 1rem; margin-bottom: .8rem; border: 1px solid #334155; display: flex; align-items: center; gap: 1rem; }
+    .produto-info { flex: 1; }
+    .produto-nome { font-weight: 600; font-size: .95rem; }
+    .produto-cat  { font-size: .75rem; color: #64748b; }
+    input[type="number"] { width: 80px; padding: .45rem .6rem; background: #1e293b; border: 1px solid #334155; border-radius: 6px; color: #e2e8f0; font-size: .95rem; text-align: center; outline: none; transition: border .2s; }
+    input.alerta  { border-color: #f87171; }
+    input.ok      { border-color: #34d399; }
+    .tag { font-size: .7rem; padding: .2rem .5rem; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+    .tag.critico  { background: #450a0a; color: #fca5a5; }
+    .tag.normal   { background: #052e16; color: #86efac; }
+    .aviso-geral  { margin-top: 1rem; padding: .75rem 1rem; background: #450a0a; color: #fca5a5; border: 1px solid #7f1d1d; border-radius: 8px; font-size: .9rem; display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📦 Controle de Estoque</h1>
+
+    <div class="produto">
+      <div class="produto-info">
+        <div class="produto-nome">🥛 Leite Integral (Lt)</div>
+        <div class="produto-cat">Laticínios</div>
+      </div>
+      <input type="number" class="qtd-estoque" min="0" value="25">
+      <span class="tag normal">OK</span>
+    </div>
+
+    <div class="produto">
+      <div class="produto-info">
+        <div class="produto-nome">🍞 Pão de Forma (Kg)</div>
+        <div class="produto-cat">Padaria</div>
+      </div>
+      <input type="number" class="qtd-estoque" min="0" value="8">
+      <span class="tag critico">⚠️ Baixo</span>
+    </div>
+
+    <div class="produto">
+      <div class="produto-info">
+        <div class="produto-nome">☕ Café Solúvel (Un)</div>
+        <div class="produto-cat">Bebidas</div>
+      </div>
+      <input type="number" class="qtd-estoque" min="0" value="50">
+      <span class="tag normal">OK</span>
+    </div>
+
+    <div class="produto">
+      <div class="produto-info">
+        <div class="produto-nome">🧴 Detergente (Un)</div>
+        <div class="produto-cat">Limpeza</div>
+      </div>
+      <input type="number" class="qtd-estoque" min="0" value="5">
+      <span class="tag critico">⚠️ Baixo</span>
+    </div>
+
+    <div class="aviso-geral" id="avisoGeral">
+      🚨 Atenção! Há produtos com estoque abaixo de 10 unidades.
+    </div>
+  </div>
+
+  <script>
+    const inputs     = document.querySelectorAll('.qtd-estoque');
+    const avisoGeral = document.getElementById('avisoGeral');
+
+    function verificar(input) {
+      const qtd = parseInt(input.value) || 0;
+      const tag = input.nextElementSibling;
+
+      if (qtd < 10) {
+        tag.textContent = '⚠️ Baixo';
+        tag.className   = 'tag critico';
+        input.classList.add('alerta');
+        input.classList.remove('ok');
+      } else {
+        tag.textContent = 'OK';
+        tag.className   = 'tag normal';
+        input.classList.add('ok');
+        input.classList.remove('alerta');
+      }
+
+      // Verifica se algum está em alerta
+      const temAlerta = [...inputs].some(i => parseInt(i.value) < 10);
+      avisoGeral.style.display = temAlerta ? 'block' : 'none';
+    }
+
+    inputs.forEach(function(input) {
+      input.addEventListener('input', function() { verificar(this); });
+      verificar(input); // estado inicial
+    });
+  </script>
+</body>
+</html>
